@@ -13,12 +13,13 @@ public class Main {
         WagonFactory wagonFactory = WagonFactory.getFactoryInstance();
 
         Train train = new Train(locomotiveFactory.createLocomotive(LocomotiveTypeOfDesignation.LOCL));
-        train.add(wagonFactory.createWagon(WagonTypeOfDesignation.WAG_D_UK), true);
+        train.add(wagonFactory.createWagon(WagonTypeOfDesignation.WAG_P_POL), true);
+        train.add(wagonFactory.createWagon(WagonTypeOfDesignation.WAG_P_POL), true);
         train.forEach(System.out::println);
         System.out.println(train + "\n" + train.size());
         System.out.println("============================");
-//        train.remove(1);
-//        train.forEach(System.out::println);
-//        System.out.println(train + "\n" + train.size());
+        train.remove(1);
+        train.forEach(System.out::println);
+        System.out.println(train + "\n" + train.size());
     }
 }
