@@ -29,7 +29,7 @@ public class Train {
         maxTotalWeight = entireEmptyWeight + maxLoadingWeight;
 
         totalTractiveEffort = locomotive.getTractiveEffort();
-        unusedTractiveEffort = totalTractiveEffort - maxTotalWeight;
+        unusedTractiveEffort = totalTractiveEffort - (maxTotalWeight - locomotive.getEmptyWeight());
         drivingCapability = unusedTractiveEffort > 0;
         amountOfConductors = maxNumberOfPassengers / 50;
     }
@@ -58,11 +58,15 @@ public class Train {
         maxNumberOfPassengers += partOfTrain.getNumberOfPassengers();
         maxLoadingWeightForGoods += partOfTrain.getMaximumLoadingWeight();
         maxLoadingWeight = (maxNumberOfPassengers * 75) + maxLoadingWeightForGoods;
+
         maxTotalWeight = entireEmptyWeight + maxLoadingWeight;
         if (partOfTrain.getClass().equals(Locomotive.class)) {
             totalTractiveEffort += ((Locomotive) partOfTrain).getTractiveEffort();
+            // By the condition we shouldn't add emptyWeight of locomotive because him tractiveEffort calculated with emptyWeight
+            unusedTractiveEffort = totalTractiveEffort - (maxTotalWeight - partOfTrain.getEmptyWeight());
+        }else {
+            unusedTractiveEffort = totalTractiveEffort - (maxTotalWeight - train.stream().filter(partOfTrain1 -> partOfTrain1.getClass().equals(Locomotive.class)).mapToInt(PartOfTrain::getEmptyWeight).sum());
         }
-        unusedTractiveEffort = totalTractiveEffort - maxTotalWeight;
         drivingCapability = unusedTractiveEffort > 0;
         amountOfConductors = (int) Math.ceil((float) maxNumberOfPassengers / 50);
     }
@@ -85,8 +89,12 @@ public class Train {
         maxTotalWeight = entireEmptyWeight + maxLoadingWeight;
         if (removed.getClass().equals(Locomotive.class)) {
             totalTractiveEffort -= ((Locomotive) removed).getTractiveEffort();
+            // By the condition we shouldn't add emptyWeight of locomotive because him tractiveEffort calculated with emptyWeight
+            unusedTractiveEffort = totalTractiveEffort - (maxTotalWeight - removed.getEmptyWeight());
+        }else {
+            unusedTractiveEffort = totalTractiveEffort - (maxTotalWeight - train.stream().filter(partOfTrain1 -> partOfTrain1.getClass().equals(Locomotive.class)).mapToInt(PartOfTrain::getEmptyWeight).sum());
         }
-        unusedTractiveEffort = totalTractiveEffort - maxTotalWeight;
+//        unusedTractiveEffort = totalTractiveEffort - maxTotalWeight;
         drivingCapability = unusedTractiveEffort > 0;
         amountOfConductors = (int) Math.ceil( (float) maxNumberOfPassengers / 50);
         return removed;
